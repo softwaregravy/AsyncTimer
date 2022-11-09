@@ -13,19 +13,24 @@ void setup() {
 }
 
 unsigned short timeoutId = 0;
+bool buttonEnabled = true;
 
 void loop() {
   t.handle();
 
   if (digitalRead(BUTTON_PIN) == HIGH) {
-    if (timeoutId != 0)
-      t.reset(timeoutId);
-    else
+    if (buttonEnabled) {
+      Serial.println("Button pressed!");
+      buttonEnabled = false;
       timeoutId = t.setTimeout(
           []() {
-            Serial.println("Button pressed!");
+            buttonEnabled = true;
             timeoutId = 0;
           },
           50);
+    }
+    if (timeoutId != 0) {
+      t.reset(timeoutId);
+    }
   }
 }
